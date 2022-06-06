@@ -1,0 +1,665 @@
+-- ManoHub
+-- Version: ONLY VERSION LMFAO
+
+-- Instances:
+
+local ManoHub = Instance.new("ScreenGui")
+local ManoHubFrame = Instance.new("Frame")
+local Appearances = Instance.new("TextButton")
+local Fly = Instance.new("TextButton")
+local AimLock = Instance.new("TextButton")
+local SilentAim = Instance.new("TextButton")
+local PromoAndCredit = Instance.new("Frame")
+local TGS = Instance.new("TextLabel")
+local Credits = Instance.new("TextLabel")
+local Mano = Instance.new("TextLabel")
+local PROMO = Instance.new("TextLabel")
+local AntiStomp = Instance.new("TextButton")
+local Target = Instance.new("TextButton")
+local ManoHubTitle = Instance.new("TextLabel")
+local Close = Instance.new("TextLabel")
+local DiscordTag = Instance.new("TextLabel")
+
+--Properties:
+
+ManoHub.Name = "ManoHub"
+ManoHub.Parent = game.CoreGui
+
+ManoHubFrame.Name = "ManoHubFrame"
+ManoHubFrame.Parent = ManoHub
+ManoHubFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ManoHubFrame.BorderColor3 = Color3.fromRGB(35, 98, 190)
+ManoHubFrame.Position = UDim2.new(0.490384609, 0, 0.385714293, 0)
+ManoHubFrame.Size = UDim2.new(0, 569, 0, 285)
+ManoHubFrame.Active = true
+
+Appearances.Name = "Appearances"
+Appearances.Parent = ManoHubFrame
+Appearances.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Appearances.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Appearances.Position = UDim2.new(0.720884621, 0, 0.265722126, 0)
+Appearances.Size = UDim2.new(0, 133, 0, 53)
+Appearances.Font = Enum.Font.Highway
+Appearances.Text = "Appearances"
+Appearances.TextColor3 = Color3.fromRGB(35, 98, 190)
+Appearances.TextSize = 25.000
+Appearances.TextStrokeTransparency = 0.000
+Appearances.MouseButton1Down:Connect(function()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/RobloxHackerProLuaStuff/avatar-editor-thing/main/headless.lua"))()
+end)
+
+Fly.Name = "Fly"
+Fly.Parent = ManoHubFrame
+Fly.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Fly.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Fly.Position = UDim2.new(0.0442590714, 0, 0.270329714, 0)
+Fly.Size = UDim2.new(0, 133, 0, 53)
+Fly.Font = Enum.Font.Highway
+Fly.Text = "Fly"
+Fly.TextColor3 = Color3.fromRGB(35, 98, 190)
+Fly.TextSize = 40.000
+Fly.TextStrokeTransparency = 0.000
+Fly.MouseButton1Down:Connect(function()
+	local plr = game.Players.LocalPlayer
+	local mouse = plr:GetMouse()
+
+	localplayer = plr
+
+	if workspace:FindFirstChild("Core") then
+		workspace.Core:Destroy()
+	end
+
+	local Core = Instance.new("Part")
+	Core.Name = "Core"
+	Core.Size = Vector3.new(0.05, 0.05, 0.05)
+
+	spawn(function()
+		Core.Parent = workspace
+		local Weld = Instance.new("Weld", Core)
+		Weld.Part0 = Core
+		Weld.Part1 = localplayer.Character.LowerTorso
+		Weld.C0 = CFrame.new(0, 0, 0)
+	end)
+
+	workspace:WaitForChild("Core")
+
+	local torso = workspace.Core
+	flying = true
+	local speed=10
+	local keys={a=false,d=false,w=false,s=false} 
+	local e1
+	local e2
+	local function start()
+		local pos = Instance.new("BodyPosition",torso)
+		local gyro = Instance.new("BodyGyro",torso)
+		pos.Name="EPIXPOS"
+		pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
+		pos.position = torso.Position
+		gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9) 
+		gyro.cframe = torso.CFrame
+		repeat
+			wait()
+			localplayer.Character.Humanoid.PlatformStand=true
+			local new=gyro.cframe - gyro.cframe.p + pos.position
+			if not keys.w and not keys.s and not keys.a and not keys.d then
+				speed=5
+			end
+			if keys.w then 
+				new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+				speed=speed+0
+			end
+			if keys.s then 
+				new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
+				speed=speed+0
+			end
+			if keys.d then 
+				new = new * CFrame.new(speed,0,0)
+				speed=speed+0
+			end
+			if keys.a then 
+				new = new * CFrame.new(-speed,0,0)
+				speed=speed+0
+			end
+			if speed>10 then
+				speed=5
+			end
+			pos.position=new.p
+			if keys.w then
+				gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(-math.rad(speed*0),0,0)
+			elseif keys.s then
+				gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(math.rad(speed*0),0,0)
+			else
+				gyro.cframe = workspace.CurrentCamera.CoordinateFrame
+			end
+		until flying == false
+		if gyro then gyro:Destroy() end
+		if pos then pos:Destroy() end
+		flying=false
+		localplayer.Character.Humanoid.PlatformStand=false
+		speed=10
+	end
+	e1=mouse.KeyDown:connect(function(key)
+		if not torso or not torso.Parent then flying=false e1:disconnect() e2:disconnect() return end
+		if key=="w" then
+			keys.w=true
+		elseif key=="s" then
+			keys.s=true
+		elseif key=="a" then
+			keys.a=true
+		elseif key=="d" then
+			keys.d=true
+		elseif key=="x" then
+			if flying==true then
+				flying=false
+			else
+				flying=true
+				start()
+			end
+		end
+	end)
+	e2=mouse.KeyUp:connect(function(key)
+		if key=="w" then
+			keys.w=false
+		elseif key=="s" then
+			keys.s=false
+		elseif key=="a" then
+			keys.a=false
+		elseif key=="d" then
+			keys.d=false
+		end
+	end)
+	start()
+end)
+
+AimLock.Name = "AimLock"
+AimLock.Parent = ManoHubFrame
+AimLock.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+AimLock.BorderColor3 = Color3.fromRGB(255, 255, 255)
+AimLock.Position = UDim2.new(0.72088474, 0, 0.701908648, 0)
+AimLock.Size = UDim2.new(0, 133, 0, 53)
+AimLock.Font = Enum.Font.Highway
+AimLock.Text = "Aimlock (Q)"
+AimLock.TextColor3 = Color3.fromRGB(35, 98, 190)
+AimLock.TextSize = 26.000
+AimLock.TextStrokeTransparency = 0.000
+AimLock.MouseButton1Down:Connect(function()
+		--[[ MANO X LOCK --> ManoW (几口Mano76卡飞#7676)
+]]
+	-- Toggle
+	getgenv().Target = true
+	-- Configuration
+	getgenv().Key = Enum.KeyCode.Q
+	getgenv().Prediction = 0.12405
+	getgenv().ChatMode = false
+	getgenv().NotifMode = true
+	getgenv().PartMode = true
+	getgenv().AirshotFunccc = true
+	getgenv().Partz = "HumanoidRootPart"
+	getgenv().AutoPrediction = false
+	--
+	_G.Types = {
+		Ball = Enum.PartType.Ball,
+		Block = Enum.PartType.Block, 
+		Cylinder = Enum.PartType.Cylinder
+	}
+
+	--variables                 
+	local Tracer = Instance.new("Part", game.Workspace)
+	Tracer.Name = "gay" 
+	Tracer.Anchored = true      
+	Tracer.CanCollide = false
+	Tracer.Transparency = 0.8
+	Tracer.Parent = game.Workspace  
+	Tracer.Shape = _G.Types.Block
+	Tracer.Size = Vector3.new(14,14,14)
+	Tracer.Color = Color3.fromRGB(255,7,255)
+
+	--
+	local plr = game.Players.LocalPlayer
+	local mouse = plr:GetMouse()
+	local Runserv = game:GetService("RunService")
+
+	circle = Drawing.new("Circle")
+	circle.Color = Color3.fromRGB(171,0,255)
+	circle.Thickness = 0
+	circle.NumSides = 732
+	circle.Radius = 120
+	circle.Thickness = 0
+	circle.Transparency = 0.7
+	circle.Visible = true
+	circle.Filled = false
+
+	Runserv.RenderStepped:Connect(function()
+		circle.Position = Vector2.new(mouse.X,mouse.Y+35)
+	end)
+
+	local guimain = Instance.new("Folder", game.CoreGui)
+	local CC = game:GetService"Workspace".CurrentCamera
+	local LocalMouse = game.Players.LocalPlayer:GetMouse()
+	local Locking = false
+
+
+	--
+	if getgenv().valiansh == true then
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Valiant",
+			Text = "Already Loaded!",
+			Duration = 5
+
+		})
+		return
+	end
+
+	getgenv().valiansh = true
+
+	local UserInputService = game:GetService("UserInputService")
+
+	UserInputService.InputBegan:Connect(function(keygo,ok)
+		if (not ok) then
+			if (keygo.KeyCode == getgenv().Key) then
+				if getgenv().Target == true then
+					Locking = not Locking
+
+					if Locking then
+						Plr =  getClosestPlayerToCursor()
+						if getgenv().ChatMode then
+							local A_1 = "Target: "..tostring(Plr.Character.Humanoid.DisplayName) local A_2 = "All" local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest Event:FireServer(A_1, A_2) 
+						end 
+						if getgenv().NotifMode then
+							game.StarterGui:SetCore("SendNotification", {
+								Title = "";
+								Text = "Target: "..tostring(Plr.Character.Humanoid.DisplayName);
+
+							})
+						end
+					elseif not Locking then
+						if getgenv().ChatMode then
+							local A_1 = "Unlocked!" local A_2 = "All" local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest Event:FireServer(A_1, A_2) 
+						end 
+						if getgenv().NotifMode then
+							game.StarterGui:SetCore("SendNotification", {
+								Title = "",
+								Text = "Unlocked",
+								Duration = 5
+							})
+						elseif getgenv().Target == false then
+							game.StarterGui:SetCore("SendNotification", {
+								Title = "",
+								Text = "Target isn't enabled",
+								Duration = 5
+
+							})
+
+						end
+
+
+					end     end   
+			end
+		end
+	end)
+
+	function getClosestPlayerToCursor()
+		local closestPlayer
+		local shortestDistance = circle.Radius
+
+		for i, v in pairs(game.Players:GetPlayers()) do
+			if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("LowerTorso") then
+				local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+				local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(LocalMouse.X, LocalMouse.Y)).magnitude
+				if magnitude < shortestDistance then
+					closestPlayer = v
+					shortestDistance = magnitude
+				end
+			end
+		end
+		return closestPlayer
+	end
+	--
+	if getgenv().PartMode then
+		game:GetService"RunService".Stepped:connect(function()
+			if Locking and Plr.Character and Plr.Character:FindFirstChild("LowerTorso") then
+				Tracer.CFrame = CFrame.new(Plr.Character.LowerTorso.Position+(Plr.Character.LowerTorso.Velocity*Prediction))
+			else
+				Tracer.CFrame = CFrame.new(0, 9999, 0)
+
+			end
+		end)
+	end
+
+
+
+	--
+	local rawmetatable = getrawmetatable(game)
+	local old = rawmetatable.__namecall
+	setreadonly(rawmetatable, false)
+	rawmetatable.__namecall = newcclosure(function(...)
+		local args = {...}
+		if Locking and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+			args[3] = Plr.Character[getgenv().Partz].Position+(Plr.Character[getgenv().Partz].Velocity*Prediction)
+			return old(unpack(args))
+		end
+		return old(...)
+	end)
+
+
+	if getgenv().AirshotFunccc == true then
+
+		if Plr.Character.Humanoid.Jump == true and Plr.Character.Humanoid.FloorMaterial == Enum.Material.Air then
+			getgenv().Partz = "RightFoot"
+		else
+			Plr.Character:WaitForChild("Humanoid").StateChanged:Connect(function(old,new)
+				if new == Enum.HumanoidStateType.Freefall then
+					getgenv().Partz = "RightFoot"
+				else
+					getgenv().Partz = "LowerTorso"
+				end
+			end)
+		end
+	end
+	---
+	while wait() do
+		if getgenv().AutoPrediction == false then 
+			local pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+			local split = string.split(pingvalue,'(')
+			local ping = tonumber(split[1])
+			if ping < 130 then
+				getgenv().Prediction = 0.151
+			elseif ping < 125 then
+				getgenv().Prediction = 0.149
+			elseif ping < 110 then
+				getgenv().Prediction = 0.146
+			elseif ping < 105 then
+				getgenv().Prediction = 0.138
+			elseif ping < 90 then
+				getgenv().Prediction = 0.136
+			elseif ping < 80 then
+				getgenv().Prediction = 0.134
+			elseif ping < 70 then
+				getgenv().Prediction = 0.131
+			elseif ping < 60 then
+				getgenv().Prediction = 0.160
+			elseif ping < 50 then
+				getgenv().Prediction = 0.153
+			elseif ping < 40 then
+				getgenv().Prediction = 0.15529888
+			end
+		end
+	end
+end)
+
+SilentAim.Name = "SilentAim"
+SilentAim.Parent = ManoHubFrame
+SilentAim.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+SilentAim.BorderColor3 = Color3.fromRGB(255, 255, 255)
+SilentAim.Position = UDim2.new(0.0442590714, 0, 0.705417395, 0)
+SilentAim.Size = UDim2.new(0, 133, 0, 53)
+SilentAim.Font = Enum.Font.Highway
+SilentAim.Text = "Silent Aim"
+SilentAim.TextColor3 = Color3.fromRGB(35, 98, 190)
+SilentAim.TextSize = 30.000
+SilentAim.TextStrokeTransparency = 0.000
+SilentAim.MouseButton1Down:Connect(function()
+	-- // Dependencies
+	local Aiming = loadstring(game:HttpGet("https://pastebin.com/raw/fKyW0Wfx"))()
+	Aiming.TeamCheck(false)
+
+	-- // Services
+	local Workspace = game:GetService("Workspace")
+	local Players = game:GetService("Players")
+	local RunService = game:GetService("RunService")
+	local UserInputService = game:GetService("UserInputService")
+
+	-- // Vars
+	local LocalPlayer = Players.LocalPlayer
+	local Mouse = LocalPlayer:GetMouse()
+	local CurrentCamera = Workspace.CurrentCamera
+
+	local DaHoodSettings = {
+		SilentAim = true,
+		Prediction = 0.165,
+	}
+	getgenv().DaHoodSettings = DaHoodSettings
+
+	-- // Overwrite to account downed
+	function Aiming.Check()
+		-- // Check A
+		if not (Aiming.Enabled == true and Aiming.Selected ~= LocalPlayer and Aiming.SelectedPart ~= nil) then
+			return false
+		end
+
+		-- // Check if downed
+		local Character = Aiming.Character(Aiming.Selected)
+		local KOd = Character:WaitForChild("BodyEffects")["K.O"].Value
+		local Grabbed = Character:FindFirstChild("GRABBING_CONSTRAINT") ~= nil
+
+		-- // Check B
+		if (KOd or Grabbed) then
+			return false
+		end
+
+		-- //
+		return true
+	end
+
+	-- // Hook
+	local __index
+	__index = hookmetamethod(game, "__index", function(t, k)
+		-- // Check if it trying to get our mouse's hit or target and see if we can use it
+		if (t:IsA("Mouse") and (k == "Hit" or k == "Target") and Aiming.Check()) then
+			-- // Vars
+			local SelectedPart = Aiming.SelectedPart
+
+			-- // Hit/Target
+			if (DaHoodSettings.SilentAim and (k == "Hit" or k == "Target")) then
+				-- // Hit to account prediction
+				local Hit = SelectedPart.CFrame + (SelectedPart.Velocity * DaHoodSettings.Prediction)
+
+				-- // Return modded val
+				return (k == "Hit" and Hit or SelectedPart)
+			end
+		end
+
+		-- // Return
+		return __index(t, k)
+	end)
+end)
+
+PromoAndCredit.Name = "PromoAndCredit"
+PromoAndCredit.Parent = ManoHubFrame
+PromoAndCredit.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+PromoAndCredit.BorderColor3 = Color3.fromRGB(255, 255, 255)
+PromoAndCredit.Position = UDim2.new(0.330933273, 0, 0.269230783, 0)
+PromoAndCredit.Size = UDim2.new(0, 192, 0, 176)
+
+TGS.Name = "TGS"
+TGS.Parent = PromoAndCredit
+TGS.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+TGS.BorderColor3 = Color3.fromRGB(255, 255, 255)
+TGS.Position = UDim2.new(0.102564491, 0, 0.0133991241, 0)
+TGS.Size = UDim2.new(0, 152, 0, 49)
+TGS.Font = Enum.Font.PatrickHand
+TGS.Text = "\"The Good Shit\""
+TGS.TextColor3 = Color3.fromRGB(255, 255, 255)
+TGS.TextSize = 30.000
+TGS.TextStrokeColor3 = Color3.fromRGB(74, 74, 74)
+TGS.TextStrokeTransparency = 0.300
+
+Credits.Name = "Credits"
+Credits.Parent = PromoAndCredit
+Credits.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Credits.BorderColor3 = Color3.fromRGB(8, 0, 255)
+Credits.Position = UDim2.new(0.015625, 0, 0.302915931, 0)
+Credits.Size = UDim2.new(0, 185, 0, 33)
+Credits.Font = Enum.Font.RobotoMono
+Credits.Text = "Credits: Founder/Scripter/Designer"
+Credits.TextColor3 = Color3.fromRGB(255, 255, 255)
+Credits.TextSize = 15.000
+Credits.TextStrokeColor3 = Color3.fromRGB(74, 74, 74)
+Credits.TextStrokeTransparency = 0.300
+Credits.TextWrapped = true
+
+Mano.Name = "Mano"
+Mano.Parent = PromoAndCredit
+Mano.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Mano.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Mano.Position = UDim2.new(0, 0, 0.547636747, 0)
+Mano.Size = UDim2.new(0, 192, 0, 50)
+Mano.Font = Enum.Font.Nunito
+Mano.Text = "---> Mano76 <---       ---> .gg/blazedW <---"
+Mano.TextColor3 = Color3.fromRGB(255, 255, 255)
+Mano.TextScaled = true
+Mano.TextSize = 14.000
+Mano.TextStrokeColor3 = Color3.fromRGB(74, 74, 74)
+Mano.TextStrokeTransparency = 0.500
+Mano.TextWrapped = true
+
+PROMO.Parent = PromoAndCredit
+PROMO.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+PROMO.BorderColor3 = Color3.fromRGB(255, 255, 255)
+PROMO.Position = UDim2.new(-0.00361168385, 0, 0.835032105, 0)
+PROMO.Size = UDim2.new(0, 192, 0, 30)
+PROMO.Text = "BUY MANO X 1.4 =)"
+PROMO.TextColor3 = Color3.fromRGB(255, 255, 255)
+PROMO.TextSize = 14.000
+PROMO.TextStrokeColor3 = Color3.fromRGB(74, 74, 74)
+PROMO.TextStrokeTransparency = 0.300
+
+AntiStomp.Name = "AntiStomp"
+AntiStomp.Parent = ManoHubFrame
+AntiStomp.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+AntiStomp.BorderColor3 = Color3.fromRGB(255, 255, 255)
+AntiStomp.Position = UDim2.new(0.720884621, 0, 0.497301072, 0)
+AntiStomp.Size = UDim2.new(0, 133, 0, 41)
+AntiStomp.Font = Enum.Font.Highway
+AntiStomp.Text = "Anti Stomp"
+AntiStomp.TextColor3 = Color3.fromRGB(35, 98, 190)
+AntiStomp.TextSize = 29.000
+AntiStomp.TextStrokeTransparency = 0.000
+AntiStomp.MouseButton1Down:Connect(function()
+	pcall(function() if tostring(game.PlaceId) == "2788229376" then local corepackages = game:GetService"CorePackages" local localplayer = game:GetService"Players".LocalPlayer local run = game:GetService"RunService" run:BindToRenderStep("rrrrrrrrrrr",2000,function() pcall(function() if localplayer.Character.Humanoid.Health <= 30 then localplayer.Character.Humanoid:UnequipTools() localplayer.Character.Humanoid:Destroy() workspace.CurrentCamera.CameraSubject = localplayer.Character wait() local prt = Instance.new("Model", corepackages); Instance.new("Part", prt).Name="Torso"; Instance.new("Part", prt).Name="Head"; Instance.new("Humanoid", prt).Name="Humanoid"; localplayer.Character=prt end end) pcall(function() if localplayer.Character.Humanoid.FloorMaterial == "Plastic" then ReplicatedStorage:FireServer("Stomp") end end) end) loadstring(game:HttpGet("https://pastebin.com/raw/MQ3wc7Zq", true))() end end)
+end)
+
+Target.Name = "Target"
+Target.Parent = ManoHubFrame
+Target.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Target.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Target.Position = UDim2.new(0.0442589521, 0, 0.504318595, 0)
+Target.Size = UDim2.new(0, 133, 0, 41)
+Target.Font = Enum.Font.Highway
+Target.Text = "Target (P)"
+Target.TextColor3 = Color3.fromRGB(35, 98, 190)
+Target.TextSize = 31.000
+Target.TextStrokeTransparency = 0.000 
+Target.MouseButton1Down:Connect(function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/GS21Official/DH-VictimMenu-Script/main/Dh%20VictimMenu%3A%20Script"))()
+end)
+
+ManoHubTitle.Name = "ManoHubTitle"
+ManoHubTitle.Parent = ManoHubFrame
+ManoHubTitle.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+ManoHubTitle.BorderColor3 = Color3.fromRGB(35, 98, 190)
+ManoHubTitle.Size = UDim2.new(0, 569, 0, 49)
+ManoHubTitle.Font = Enum.Font.Cartoon
+ManoHubTitle.Text = "Mano Hub"
+ManoHubTitle.TextColor3 = Color3.fromRGB(35, 98, 190)
+ManoHubTitle.TextSize = 59.000
+ManoHubTitle.TextStrokeTransparency = -1.000
+
+Close.Name = "Close"
+Close.Parent = ManoHubTitle
+Close.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+Close.BorderColor3 = Color3.fromRGB(35, 98, 190)
+Close.Position = UDim2.new(0.0442589633, 0, 0.102190293, 0)
+Close.Size = UDim2.new(0, 133, 0, 38)
+Close.Font = Enum.Font.Sarpanch
+Close.Text = "\"M\" To Close."
+Close.TextColor3 = Color3.fromRGB(0, 0, 0)
+Close.TextSize = 25.000
+
+DiscordTag.Name = "DiscordTag"
+DiscordTag.Parent = ManoHubTitle
+DiscordTag.BackgroundColor3 = Color3.fromRGB(8, 0, 255)
+DiscordTag.BorderColor3 = Color3.fromRGB(35, 98, 190)
+DiscordTag.Position = UDim2.new(0.720884621, 0, 0.102190293, 0)
+DiscordTag.Size = UDim2.new(0, 133, 0, 38)
+DiscordTag.Font = Enum.Font.SourceSans
+DiscordTag.Text = "几口Mano76卡飞#7676"
+DiscordTag.TextColor3 = Color3.fromRGB(0, 0, 0)
+DiscordTag.TextSize = 16.000
+
+-- Scripts:
+
+local function RUGU_fake_script() -- ManoHubFrame.Draggable 
+	local script = Instance.new('LocalScript', ManoHubFrame)
+
+	local UIS = game:GetService('UserInputService')
+	local frame = script.Parent
+	local dragToggle = nil
+	local dragSpeed = 0.25
+	local dragStart = nil
+	local startPos = nil
+	
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
+	
+	frame.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			dragToggle = true
+			dragStart = input.Position
+			startPos = frame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+	
+	UIS.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if dragToggle then
+				updateInput(input)
+			end
+		end
+	end)
+end
+coroutine.wrap(RUGU_fake_script)()
+local function JQOVQEB_fake_script() -- ManoHub.CloseToggle 
+	local script = Instance.new('LocalScript', ManoHub)
+
+	local FrameObject = script.Parent.ManoHubFrame
+	local Open = false
+	
+	
+	local UserInputService = game:GetService("UserInputService")
+	
+	UserInputService.InputBegan:Connect(function(Input, gameprocess)
+		if not gameprocess then
+			if Input.KeyCode == Enum.KeyCode.M then
+				if Open then
+					Open = false
+					script.Parent.ManoHubFrame.Visible = true
+				else
+					Open = true
+					script.Parent.ManoHubFrame.Visible = false
+				end
+			end
+		end
+	end)
+	
+end
+coroutine.wrap(JQOVQEB_fake_script)()
+local plr = game.Players.LocalPlayer
+local group, rank = 14476561, 1 or 254
+
+if plr:GetRankInGroup(group) == rank then
+	script.Parent.Visible = true
+else
+	game.Players.LocalPlayer:Kick("                                  Join Blazed~ group to use this script :)   https://www.roblox.com/groups/14476561/Blazed#!/about  ")
+end
+coroutine.wrap(PYWKT_fake_script)()
+
